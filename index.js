@@ -36,6 +36,80 @@ class Tree {
         // Call the recursive function to build the tree
         return buildBST(0, arr.length - 1);
     }
+
+    insert(value) {
+        const newNode = new Node(value)
+        if (!this.root) {
+            this.root = newNode
+        } else {
+            this.insertNode(this.root, newNode)
+        }
+    }
+
+    insertNode(node, newNode) {
+        if (newNode.data < node.data) {
+            if (!node.left) {
+                node.left = newNode
+            } else {
+                this.insertNode(node.left, newNode)
+            }
+        } else {
+            if (!node.right) {
+                node.right = newNode
+            } else {
+                this.insertNode(node.right, newNode)
+            }
+
+        }
+    }
+
+    deleteItem(value) {
+        if (!this.root) {
+            return
+        } else {
+            this.removeNode(this.root, value)
+        }
+    }
+
+    removeNode(node, value) {
+        if (!node) {
+            return null
+        }
+
+        if (value < node.data) {
+            node.left = this.removeNode(node.left, value)
+            return node
+        }
+        else if (value > node.data) {
+            node.right = this.removeNode(node.right, value)
+            return node
+        } else {
+            // Case 1: No children
+            if (!node.left && !node.right) {
+                return null;
+            }
+
+            // Case 2: One child
+            if (!node.left && node.right) {
+                return node.right
+            } else if (!node.right && node.left) {
+                return node.left
+            }
+
+            // Case 3: Node with two children, return the predecessor of the node
+            let predecessor = this.findMinNode(node.left);
+            node.data = predecessor.data;
+            node.left = this.removeNode(node.left, predecessor.data)
+            return node;
+        }
+    }
+
+    findMinNode(node) {
+        while (node.right !== null) {
+            node = node.right
+        }
+        return node
+    }
 }
 
 const prettyPrint = (node, prefix = "", isLeft = true) => {
@@ -53,4 +127,12 @@ const prettyPrint = (node, prefix = "", isLeft = true) => {
 
 const array = [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324];
 const tree = new Tree(array)
+tree.insert(2)
+tree.insert(10)
+tree.insert(66)
+tree.deleteItem(67)
+tree.deleteItem(66)
+tree.deleteItem(23)
+tree.deleteItem(4)
 console.log(prettyPrint(tree.root))
+console.log(tree.root)
