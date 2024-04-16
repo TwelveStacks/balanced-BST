@@ -110,6 +110,24 @@ class Tree {
         }
         return node
     }
+
+    find(value) {
+        return this.findNode(this.root, value)
+    }
+
+    findNode(node, value) {
+        if (!node) {
+            return null
+        }
+
+        if (value === node.data) {
+            return node
+        } else if (value < node.data) {
+            return this.findNode(node.left, value)
+        } else {
+            return this.findNode(node.right, value)
+        }
+    }
 }
 
 const prettyPrint = (node, prefix = "", isLeft = true) => {
@@ -130,9 +148,5 @@ const tree = new Tree(array)
 tree.insert(2)
 tree.insert(10)
 tree.insert(66)
-tree.deleteItem(67)
-tree.deleteItem(66)
-tree.deleteItem(23)
-tree.deleteItem(4)
 console.log(prettyPrint(tree.root))
 console.log(tree.root)
