@@ -128,6 +128,38 @@ class Tree {
             return this.findNode(node.right, value)
         }
     }
+
+    levelOrder(callback) {
+        // If root node does not exist return empty array
+        if (!this.root) {
+            return [];
+        }
+
+        // Create array to visited nodes from queue
+        const outputArray = [];
+        // Create a queue with root node as first element
+        const queue = [this.root];
+
+        while (queue.length > 0) {
+            let currentNode = queue.shift();
+            outputArray.push(currentNode)
+            if (callback) {
+                outputArray.push(callback(currentNode));
+            } else {
+                outputArray.push(currentNode.data);
+            }
+
+            if (currentNode.left) {
+                queue.push(currentNode.left)
+            }
+
+            if (currentNode.right) {
+                queue.push(currentNode.right)
+            }
+        }
+
+        return outputArray
+    }
 }
 
 const prettyPrint = (node, prefix = "", isLeft = true) => {
