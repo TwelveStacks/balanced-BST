@@ -142,9 +142,9 @@ class Tree {
 
         while (queue.length > 0) {
             let currentNode = queue.shift();
-            outputArray.push(currentNode)
+
             if (callback) {
-                outputArray.push(callback(currentNode));
+                callback(currentNode.data);
             } else {
                 outputArray.push(currentNode.data);
             }
@@ -159,6 +159,75 @@ class Tree {
         }
 
         return outputArray
+    }
+
+    // function that returns the given node’s height. 
+    // Height is defined as the number of edges in the 
+    // longest path from a given node to a leaf node.
+    height(node) {
+        if (node === null) {
+            return -1;
+        }
+
+        const leftSide = this.height(node.left)
+        const rightSide = this.height(node.right)
+
+        return Math.max(leftSide, rightSide) + 1
+    }
+
+    depth(node) {
+        return this.calculateDepth(this.root, node, 0)
+    }
+
+    calculateDepth(currentNode, targetNode, currentDepth) {
+        // If current node is null return -1
+        if (!currentNode) {
+            return -1
+        }
+
+        // If current node is the target node, return current depth
+        if (currentNode === targetNode) {
+            return currentDepth
+        }
+
+        // Recursively search left and right subtrees for target
+        const leftDepth = this.calculateDepth(currentNode.left, targetNode, currentDepth + 1)
+        const rightDepth = this.calculateDepth(currentNode.right, targetNode, currentDepth + 1)
+
+        // Return the maximum depth
+        return Math.max(leftDepth, rightDepth)
+    }
+
+    isBalanced() {
+        return this.checkBalanced(this.root) !== -1;
+    }
+
+    checkBalanced(node) {
+        // If node is null return 0
+        if (!node) {
+            return 0
+        }
+
+        // Check left and right heights
+        const leftHeight = this.height(node.left)
+        const rightHeight = this.height(node.right)
+
+        if (Math.abs(leftHeight - rightHeight) > 1) {
+            return -1; // Not balanced
+        }
+
+        // Recursively check left and right subtrees
+        if (this.checkBalanced(node.left) === -1 || this.checkBalanced(node.right) === -1) {
+            return -1; // Not balanced
+        }
+
+        // Return height of current node
+        return Math.max(leftHeight, rightHeight) + 1;
+    }
+
+    rebalance() {
+        const orderNodes = this.levelOrder();
+        this.root = this.buildTree(orderNodes)
     }
 }
 
@@ -182,3 +251,6 @@ tree.insert(10)
 tree.insert(66)
 console.log(prettyPrint(tree.root))
 console.log(tree.root)
+console.log(tree.isBalanced())
+tree.rebalance()
+console.log(prettyPrint(tree.root))
